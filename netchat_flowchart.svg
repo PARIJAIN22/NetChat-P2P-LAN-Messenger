@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 690" width="1320" height="690" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#14213D"/>
+    </marker>
+  </defs>
+  <rect width="1320" height="690" fill="#FFFFFF"/>
+
+  <!-- ===== Connectors (drawn first so boxes sit on top) ===== -->
+  <g stroke="#14213D" stroke-width="2.5" fill="none" marker-end="url(#arr)">
+    <!-- row 1, left to right -->
+    <line x1="320" y1="115" x2="398" y2="115"/>
+    <line x1="630" y1="115" x2="708" y2="115"/>
+    <line x1="940" y1="115" x2="1018" y2="115"/>
+    <!-- down to row 2 -->
+    <line x1="1135" y1="160" x2="1135" y2="258"/>
+    <!-- row 2, right to left -->
+    <line x1="1020" y1="305" x2="942" y2="305"/>
+    <line x1="710" y1="305" x2="632" y2="305"/>
+    <line x1="400" y1="305" x2="322" y2="305"/>
+    <!-- down to decision -->
+    <line x1="205" y1="350" x2="205" y2="428"/>
+    <!-- Yes: decision to BYE -->
+    <line x1="320" y1="495" x2="398" y2="495"/>
+    <!-- row 3, left to right -->
+    <line x1="630" y1="495" x2="708" y2="495"/>
+    <line x1="940" y1="495" x2="1018" y2="495"/>
+    <!-- No: loop back to chat -->
+    <path d="M90 495 H40 V305 H88"/>
+  </g>
+  <text x="352" y="484" text-anchor="middle" font-size="16" fill="#14213D" font-weight="600">Yes</text>
+  <text x="48" y="420" font-size="16" fill="#14213D" font-weight="600">No</text>
+
+  <!-- ===== Row 1 ===== -->
+  <rect x="90" y="70" width="230" height="90" rx="45" fill="#14213D"/>
+  <text x="205" y="122" text-anchor="middle" font-size="20" fill="#FFFFFF" font-weight="600">Start NetChat</text>
+
+  <rect x="400" y="70" width="230" height="90" rx="10" fill="#F4F6F8" stroke="#7A869A" stroke-width="2"/>
+  <text x="515" y="108" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Enter username</text>
+  <text x="515" y="133" text-anchor="middle" font-size="15" fill="#555">name shown to peers</text>
+
+  <rect x="710" y="70" width="230" height="90" rx="10" fill="#F4F6F8" stroke="#7A869A" stroke-width="2"/>
+  <text x="825" y="108" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Start listener threads</text>
+  <text x="825" y="133" text-anchor="middle" font-size="15" fill="#555">TCP 5000, UDP 5001</text>
+
+  <rect x="1020" y="70" width="230" height="90" rx="10" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2.5"/>
+  <text x="1135" y="108" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Broadcast HELLO</text>
+  <text x="1135" y="133" text-anchor="middle" font-size="15" fill="#555">UDP, to the whole subnet</text>
+
+  <!-- ===== Row 2 (right to left) ===== -->
+  <rect x="1020" y="260" width="230" height="90" rx="10" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2.5"/>
+  <text x="1135" y="298" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Peers send REPLY</text>
+  <text x="1135" y="323" text-anchor="middle" font-size="15" fill="#555">online list is updated</text>
+
+  <rect x="710" y="260" width="230" height="90" rx="10" fill="#F4F6F8" stroke="#7A869A" stroke-width="2"/>
+  <text x="825" y="298" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Select a peer</text>
+  <text x="825" y="323" text-anchor="middle" font-size="15" fill="#555">from the online list</text>
+
+  <rect x="400" y="260" width="230" height="90" rx="10" fill="#E8EBF2" stroke="#14213D" stroke-width="2.5"/>
+  <text x="515" y="298" text-anchor="middle" font-size="19" fill="#333" font-weight="600">TCP connection set up</text>
+  <text x="515" y="323" text-anchor="middle" font-size="15" fill="#555">3-way handshake</text>
+
+  <rect x="90" y="260" width="230" height="90" rx="10" fill="#E8EBF2" stroke="#14213D" stroke-width="2.5"/>
+  <text x="205" y="298" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Send / receive MSG</text>
+  <text x="205" y="323" text-anchor="middle" font-size="15" fill="#555">separate threads</text>
+
+  <!-- ===== Row 3 ===== -->
+  <polygon points="205,430 320,495 205,560 90,495" fill="#FFFFFF" stroke="#14213D" stroke-width="2.5"/>
+  <text x="205" y="502" text-anchor="middle" font-size="20" fill="#333" font-weight="600">Exit?</text>
+
+  <rect x="400" y="450" width="230" height="90" rx="10" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2.5"/>
+  <text x="515" y="488" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Broadcast BYE</text>
+  <text x="515" y="513" text-anchor="middle" font-size="15" fill="#555">UDP, peers remove user</text>
+
+  <rect x="710" y="450" width="230" height="90" rx="10" fill="#E8EBF2" stroke="#14213D" stroke-width="2.5"/>
+  <text x="825" y="488" text-anchor="middle" font-size="19" fill="#333" font-weight="600">Close all sockets</text>
+  <text x="825" y="513" text-anchor="middle" font-size="15" fill="#555">TCP connection closed</text>
+
+  <rect x="1020" y="450" width="230" height="90" rx="45" fill="#14213D"/>
+  <text x="1135" y="502" text-anchor="middle" font-size="20" fill="#FFFFFF" font-weight="600">End</text>
+
+  <!-- ===== Legend ===== -->
+  <rect x="330" y="618" width="26" height="18" rx="4" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2"/>
+  <text x="366" y="633" font-size="16" fill="#333">UDP step (discovery)</text>
+  <rect x="590" y="618" width="26" height="18" rx="4" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+  <text x="626" y="633" font-size="16" fill="#333">TCP step (messaging)</text>
+  <rect x="850" y="618" width="26" height="18" rx="4" fill="#F4F6F8" stroke="#7A869A" stroke-width="2"/>
+  <text x="886" y="633" font-size="16" fill="#333">Local step</text>
+</svg>

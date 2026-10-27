@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 720" width="1320" height="720" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="tcpEnd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#14213D"/>
+    </marker>
+    <marker id="udpEnd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1AA7A1"/>
+    </marker>
+  </defs>
+
+  <rect width="1320" height="720" fill="#FFFFFF"/>
+
+  <!-- TCP arc between Peer A and Peer C (any peer can talk to any peer) -->
+  <path d="M220 190 C220 80 1100 80 1100 190" fill="none" stroke="#14213D" stroke-width="3" marker-start="url(#tcpEnd)" marker-end="url(#tcpEnd)"/>
+  <text x="660" y="82" text-anchor="middle" font-size="17" fill="#14213D" font-weight="600">TCP connection (direct, peer to peer)</text>
+
+  <!-- Peers -->
+  <g id="peerA">
+    <rect x="50" y="190" width="340" height="260" rx="14" fill="#F4F6F8" stroke="#14213D" stroke-width="2.5"/>
+    <path d="M50 240 V204 a14 14 0 0 1 14 -14 H376 a14 14 0 0 1 14 14 V240 z" fill="#14213D"/>
+    <text x="220" y="223" text-anchor="middle" font-size="22" fill="#FFFFFF" font-weight="600">Peer A</text>
+    <rect x="68" y="260" width="145" height="80" rx="8" fill="#FFFFFF" stroke="#7A869A" stroke-width="2"/>
+    <text x="140" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">User Interface</text>
+    <text x="140" y="319" text-anchor="middle" font-size="14" fill="#555">chat + peer list</text>
+    <rect x="227" y="260" width="145" height="80" rx="8" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2"/>
+    <text x="299" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Discovery</text>
+    <text x="299" y="319" text-anchor="middle" font-size="14" fill="#555">UDP 5001</text>
+    <rect x="68" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="140" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">TCP Listener</text>
+    <text x="140" y="414" text-anchor="middle" font-size="14" fill="#555">server socket 5000</text>
+    <rect x="227" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="299" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Sender</text>
+    <text x="299" y="414" text-anchor="middle" font-size="14" fill="#555">client socket</text>
+  </g>
+
+  <g id="peerB">
+    <rect x="490" y="190" width="340" height="260" rx="14" fill="#F4F6F8" stroke="#14213D" stroke-width="2.5"/>
+    <path d="M490 240 V204 a14 14 0 0 1 14 -14 H816 a14 14 0 0 1 14 14 V240 z" fill="#14213D"/>
+    <text x="660" y="223" text-anchor="middle" font-size="22" fill="#FFFFFF" font-weight="600">Peer B</text>
+    <rect x="508" y="260" width="145" height="80" rx="8" fill="#FFFFFF" stroke="#7A869A" stroke-width="2"/>
+    <text x="580" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">User Interface</text>
+    <text x="580" y="319" text-anchor="middle" font-size="14" fill="#555">chat + peer list</text>
+    <rect x="667" y="260" width="145" height="80" rx="8" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2"/>
+    <text x="739" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Discovery</text>
+    <text x="739" y="319" text-anchor="middle" font-size="14" fill="#555">UDP 5001</text>
+    <rect x="508" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="580" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">TCP Listener</text>
+    <text x="580" y="414" text-anchor="middle" font-size="14" fill="#555">server socket 5000</text>
+    <rect x="667" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="739" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Sender</text>
+    <text x="739" y="414" text-anchor="middle" font-size="14" fill="#555">client socket</text>
+  </g>
+
+  <g id="peerC">
+    <rect x="930" y="190" width="340" height="260" rx="14" fill="#F4F6F8" stroke="#14213D" stroke-width="2.5"/>
+    <path d="M930 240 V204 a14 14 0 0 1 14 -14 H1256 a14 14 0 0 1 14 14 V240 z" fill="#14213D"/>
+    <text x="1100" y="223" text-anchor="middle" font-size="22" fill="#FFFFFF" font-weight="600">Peer C</text>
+    <rect x="948" y="260" width="145" height="80" rx="8" fill="#FFFFFF" stroke="#7A869A" stroke-width="2"/>
+    <text x="1020" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">User Interface</text>
+    <text x="1020" y="319" text-anchor="middle" font-size="14" fill="#555">chat + peer list</text>
+    <rect x="1107" y="260" width="145" height="80" rx="8" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2"/>
+    <text x="1179" y="296" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Discovery</text>
+    <text x="1179" y="319" text-anchor="middle" font-size="14" fill="#555">UDP 5001</text>
+    <rect x="948" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="1020" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">TCP Listener</text>
+    <text x="1020" y="414" text-anchor="middle" font-size="14" fill="#555">server socket 5000</text>
+    <rect x="1107" y="355" width="145" height="80" rx="8" fill="#E8EBF2" stroke="#14213D" stroke-width="2"/>
+    <text x="1179" y="391" text-anchor="middle" font-size="17" fill="#333" font-weight="600">Sender</text>
+    <text x="1179" y="414" text-anchor="middle" font-size="14" fill="#555">client socket</text>
+  </g>
+
+  <!-- TCP links between neighbouring peers -->
+  <line x1="392" y1="395" x2="488" y2="395" stroke="#14213D" stroke-width="3" marker-start="url(#tcpEnd)" marker-end="url(#tcpEnd)"/>
+  <text x="440" y="385" text-anchor="middle" font-size="15" fill="#14213D" font-weight="600">TCP</text>
+  <line x1="832" y1="395" x2="928" y2="395" stroke="#14213D" stroke-width="3" marker-start="url(#tcpEnd)" marker-end="url(#tcpEnd)"/>
+  <text x="880" y="385" text-anchor="middle" font-size="15" fill="#14213D" font-weight="600">TCP</text>
+
+  <!-- UDP broadcast down to the LAN -->
+  <line x1="220" y1="452" x2="220" y2="558" stroke="#1AA7A1" stroke-width="3" stroke-dasharray="9 7" marker-start="url(#udpEnd)" marker-end="url(#udpEnd)"/>
+  <line x1="660" y1="452" x2="660" y2="558" stroke="#1AA7A1" stroke-width="3" stroke-dasharray="9 7" marker-start="url(#udpEnd)" marker-end="url(#udpEnd)"/>
+  <line x1="1100" y1="452" x2="1100" y2="558" stroke="#1AA7A1" stroke-width="3" stroke-dasharray="9 7" marker-start="url(#udpEnd)" marker-end="url(#udpEnd)"/>
+  <text x="236" y="512" font-size="15" fill="#0E7C77" font-weight="600">UDP broadcast</text>
+  <text x="676" y="512" font-size="15" fill="#0E7C77" font-weight="600">UDP broadcast</text>
+  <text x="1116" y="512" font-size="15" fill="#0E7C77" font-weight="600">UDP broadcast</text>
+
+  <!-- LAN bar -->
+  <rect x="50" y="560" width="1220" height="56" rx="10" fill="#E6F6F5" stroke="#1AA7A1" stroke-width="2.5"/>
+  <text x="660" y="595" text-anchor="middle" font-size="19" fill="#14213D" font-weight="600">Local Area Network (same subnet, e.g. 192.168.1.0/24)</text>
+
+  <!-- Legend -->
+  <line x1="300" y1="672" x2="360" y2="672" stroke="#14213D" stroke-width="3" marker-end="url(#tcpEnd)"/>
+  <text x="372" y="678" font-size="16" fill="#333">TCP, port 5000: chat messages (reliable)</text>
+  <line x1="740" y1="672" x2="800" y2="672" stroke="#1AA7A1" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#udpEnd)"/>
+  <text x="812" y="678" font-size="16" fill="#333">UDP, port 5001: peer discovery (HELLO, REPLY, BYE)</text>
+</svg>

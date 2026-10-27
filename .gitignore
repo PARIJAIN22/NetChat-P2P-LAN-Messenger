@@ -1,0 +1,58 @@
+# --- NetChat private / per-user data (never commit) ---
+identity.key
+*.key
+*.pem
+netchat.db
+*.db
+*.db-journal
+*.sqlite*
+*.log
+settings.json
+settings.json.tmp
+*.tmp
+# per-instance data folders used for local testing (python main.py --data-dir rahul ...)
+/rahul/
+/asha/
+/meera/
+/data/
+# received files
+Downloads/
+
+# --- secrets ---
+.env
+.env.*
+*.secret
+
+# --- Python caches / builds ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- virtual environments ---
+venv/
+.venv/
+env/
+nc_venv/
+
+# --- editors / OS ---
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# screenshots: only a reviewed selection is published (the rest stay local)
+screenshots/*
+!screenshots/asha_02_light_default.png
+!screenshots/asha_07_dark_network_log.png
+!screenshots/t1_queued_delivered_asha.png
+!screenshots/t2_progress_asha.png
+!screenshots/t3_group_asha_asha.png
+!screenshots/t3_lock_fingerprint_asha_asha.png
+!screenshots/t4_network_info_asha.png
