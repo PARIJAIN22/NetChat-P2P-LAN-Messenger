@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 
 from . import config
+from .osmonitor import ProcessMonitor
 from .gui_widgets import FONT_BODY, FONT_MONO, FONT_NAME, FONT_SMALL, ScrollFrame, px, validate_name
 from .settings import valid_port
 
@@ -305,6 +306,45 @@ class NetworkInfoDialog(ThemedDialog):
                                                       [tuple(c[1] for c in self.COLUMNS)] + self._rows())
         self.clipboard_clear()
         self.clipboard_append(text)
+
+
+class SystemMonitorDialog(ThemedDialog):
+    """What this NetChat process costs the OS: CPU %, RAM, threads, TCP connections.
+    Not modal, refreshes every second (same pattern as the Network info window)."""
+
+    def __init__(self, root, t, app):
+        super().__init__(root, t, "System monitor")
+        self.app = app
+        self.monitor = ProcessMonitor()
+        self.facts = tk.Label(self.body, text="", font=FONT_MONO, bg=t["card_bg"], fg=t["text"], anchor="w",
+                              justify="left")
+        self.facts.pack(fill="x")
+        self.label("CPU %% is the share of all %d cores, measured over the last second." % self.monitor.cores,
+                   muted=True, wrap=px(420), pady=(px(6), 0))
+        row = tk.Frame(self.body, bg=t["card_bg"])
+        row.pack(fill="x", pady=(px(10), 0))
+        ttk.Button(row, text="Close", style="Send.TButton", cursor="hand2", command=self.cancel).pack(side="right")
+        self.refresh()
+
+    def show(self):
+        self.update_idletasks()
+        self.geometry("+%d+%d" % (self.root.winfo_rootx() + px(80), self.root.winfo_rooty() + px(80)))
+
+    @staticmethod
+    def format(s):
+        ram = "%.1f MB" % (s["ram"] / 1024 ** 2) if s["ram"] is not None else "unknown"
+        return "\n".join(["Process ID          %d" % s["pid"],
+                          "CPU                 %.1f %%" % s["cpu"],
+                          "RAM (resident)      %s" % ram,
+                          "Threads             %d" % s["threads"],
+                          "TCP connections     %d  (%d dialed, %d accepted)"
+                          % (s["outgoing"] + s["incoming"], s["outgoing"], s["incoming"])])
+
+    def refresh(self):
+        if not self.winfo_exists():
+            return
+        self.facts.configure(text=self.format(self.monitor.sample(self.app.peer)))
+        self.after(1000, self.refresh)
 
 
 # ======================================================================

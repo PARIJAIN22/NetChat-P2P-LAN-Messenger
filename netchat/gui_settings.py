@@ -8,7 +8,7 @@ import sys
 from tkinter import messagebox, simpledialog
 
 from . import settings
-from .gui_dialogs import EmojiPicker, NetworkInfoDialog, SettingsDialog
+from .gui_dialogs import EmojiPicker, NetworkInfoDialog, SettingsDialog, SystemMonitorDialog
 
 
 def restart_arguments(argv):
@@ -45,6 +45,13 @@ class SettingsMixin:
             return
         self.net_dialog = NetworkInfoDialog(self.root, self.t, self)
         self.net_dialog.show()
+
+    def _open_system_monitor(self):
+        if self.sys_dialog is not None and self.sys_dialog.winfo_exists():
+            self.sys_dialog.lift()
+            return
+        self.sys_dialog = SystemMonitorDialog(self.root, self.t, self)
+        self.sys_dialog.show()
 
     def _open_settings(self):
         current = dict(self.settings)

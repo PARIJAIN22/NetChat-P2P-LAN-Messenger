@@ -63,6 +63,7 @@ class LayoutMixin:
         menubar.add_cascade(label="View", menu=view)
         tools = tk.Menu(menubar, tearoff=False)
         tools.add_command(label="Network info...", command=self._open_network_info)
+        tools.add_command(label="System monitor...", command=self._open_system_monitor)
         tools.add_command(label="Settings...", command=self._open_settings)
         menubar.add_cascade(label="Tools", menu=tools)
         self.root.config(menu=menubar)

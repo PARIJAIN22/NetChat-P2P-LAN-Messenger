@@ -67,6 +67,7 @@ class ChatApp(LayoutMixin, StatusMixin, FilesMixin, GroupsMixin, SettingsMixin):
         self.progress = {}                   # file id -> (bytes done, bytes per second)
         self.net_info = None                 # subnet facts, filled in by a background thread
         self.net_dialog = None
+        self.sys_dialog = None
         self.base_title = "NetChat - %s" % name
         self.manual_peers = getattr(args, "peer", None) or []
         self.trust_asked = set()             # (peer, fingerprint) already asked about, so we ask only once

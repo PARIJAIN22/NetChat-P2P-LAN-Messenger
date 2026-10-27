@@ -11,6 +11,10 @@ Peers find each other automatically with **UDP broadcast**. Everything uses the 
 standard library (`socket`, `threading`, `sqlite3`, `tkinter`, `unittest`) **except encryption**,
 which needs one optional package (`pip install cryptography`, see [Requirements](#requirements)).
 
+Built as a 3rd-year **Operating Systems** project: besides the networking it is a study in threads,
+synchronisation, producer/consumer queues, persistent state and process monitoring (see
+[Operating-system concepts](#operating-system-concepts)).
+
 ## Features
 
 | | Feature | Where to look |
@@ -32,6 +36,7 @@ which needs one optional package (`pip install cryptography`, see [Requirements]
 | 16 | **Automatic reconnection**: a dropped connection is rebuilt with bounded retries (0.5, 1, 2, 4, 8 s) | `peer.py` (`_reconnect`) |
 | 17 | **Connect by IP** (Chat menu, `/connect IP[:PORT]`, `--peer IP[:PORT]`) when UDP discovery is blocked; the other side learns our port from the handshake | `peer.py` (`connect_to`) |
 | - | **Console mode** (`--cli`): `/peers`, `/send`, `/file`, `/accept`, ... | `cli.py` |
+| 18 | **System monitor** (Tools menu): this process's CPU %, RAM, thread count and open TCP connections, refreshed every second | `osmonitor.py`, `gui_dialogs.py` |
 | - | Network log panel (Ctrl+L), light / dark mode | `gui_status.py`, `gui_layout.py` |
 
 Not included: drag-and-drop of files (Tk has no built-in support for it on Windows; use the
@@ -74,6 +79,7 @@ netchat/filetransfer.py file offers, chunks, SHA-256, cancel
 netchat/storage.py      sqlite3: history, outbox (offline queue), groups
 netchat/settings.py     settings.json
 netchat/netinfo.py      subnet / broadcast calculation
+netchat/osmonitor.py    process CPU %, RAM, threads, connections (System monitor)
 
 netchat/gui.py          the window: events, messages, sidebar        (uses these "mixins":)
 netchat/gui_layout.py     building the window, light / dark themes
@@ -86,7 +92,7 @@ netchat/gui_dialogs.py  new group, settings, network info, emoji picker
 netchat/gui_widgets.py  colours, fonts, input box, start-up dialog, icon
 netchat/cli.py          console mode
 netchat/logger.py       timestamped socket log (netchat.log)
-tests/                  unittest tests (140)
+tests/                  unittest tests (145)
 ```
 
 Layers, from the network up. **Nothing in the network layer touches a widget, and nothing in the
@@ -113,6 +119,18 @@ GUI touches a socket**:
   the side that accepted answers on the *same* socket with ACKs, PONGs and accept / decline.
 
 ## How to run
+
+### Setup
+
+```
+git clone https://github.com/PARIJAIN22/NetChat-P2P-LAN-Messenger.git
+cd NetChat-P2P-LAN-Messenger
+pip install cryptography        # optional, but needed for encryption
+python main.py                  # asks for a username, then opens the window
+```
+
+Private files (`netchat.db`, `settings.json`, `identity.key`, `netchat.log`) are created next to the program
+(or in `--data-dir`) and are excluded from Git by `.gitignore`.
 
 ### One computer, 2 or 3 instances
 
@@ -169,6 +187,10 @@ Ctrl+F search, Ctrl+O send a file, Ctrl+L network log.
 python -m unittest discover -s tests -v
 ```
 
+145 tests, about 70 s. Without the `cryptography` package the 24 encryption tests are skipped automatically.
+The tests start real peers on localhost (real sockets, threads and sqlite files); only the GUI drawing itself is
+not automated.
+
 | File | What it checks |
 |---|---|
 | `test_protocol.py` | UDP lines; **every TCP frame type** round-trips; partial reads (1 byte at a time); glued frames; oversized header / chunk; bad JSON; wrong version; reserved names |
@@ -180,6 +202,7 @@ python -m unittest discover -s tests -v
 | `test_misc_features.py` | settings file, command line vs settings priority, subnet maths, **RTT measurement**, changing the passphrase while running |
 | `test_gui_widgets.py` | username validation, avatar colours, themes |
 | `test_resume.py` | interrupted transfer **resumes from its offset**, **corrupted partial file** detected (starts again), **damaged chunk re-requested** / fails after 3, sender restart resumes from the database, cancel while interrupted; **reconnection** (rebuilt, bounded, not after BYE); **connect by IP** both ways, errors, kept alive by PONG |
+| `test_osmonitor.py` | System monitor: RAM is plausible, CPU % rises under load and stays in 0-100, thread count follows new threads, only open connections are counted, panel text |
 | `test_security.py` | **duplicate names** in discovery, **signed / address-checked BYE** (forged and replayed BYEs ignored), **identity keys pinned on first use** (impostor and downgrade refused, user can trust a new key), per-recipient delivery order, ACK bookkeeping, cancel-vs-chunk race, GUI event loop survives errors and floods, bounded `stop()` |
 
 ## Protocol
@@ -340,6 +363,35 @@ Also make sure the Wi-Fi network is marked **Private**, not Public
 * **Two people with the same name.** Not supported.
 * The socket log is in `netchat.log` (and in the network log panel).
 
+## Operating-system concepts
+
+| OS concept | Where it appears in NetChat |
+|---|---|
+| **Processes and threads** | One process, many threads: GUI thread, TCP accept thread, one reader thread per connection, UDP listener, heartbeat, housekeeping, one delivery worker per recipient, file send / hash / resume workers (`peer.py`, `filetransfer.py`) |
+| **Mutual exclusion** | `threading.Lock` for the peer table, connections, ACK bookkeeping and the database; a per-connection send lock so two threads never interleave bytes of two frames; a re-entrant `RLock` per file transfer (`discovery.py`, `connection.py`, `filetransfer.py`, `storage.py`) |
+| **Race conditions fixed** | check-then-insert done atomically (identity keys, file offers); ACK registered *before* the frame is sent; Cancel vs. a chunk being written; messages to one peer kept in order by a single worker (`test_security.py`) |
+| **Deadlock avoidance** | slow work (network sends, hashing a file) is done *outside* locks; locks are held for short, bounded sections only |
+| **Producer / consumer** | network threads only `put()` events into a `queue.Queue`; the GUI thread consumes them in time slices of 50 ms, so the window never freezes (`gui.py`) |
+| **Blocking I/O, timeouts, polling** | `select()` with a short timeout so reader threads notice shutdown; send timeouts; `Event.wait()` as an interruptible sleep (`connection.py`) |
+| **Thread life cycle** | daemon threads, joined on exit with ONE overall deadline (`config.STOP_TIMEOUT`), so closing never hangs |
+| **Inter-process communication** | separate NetChat processes (on one PC or several) talk only through UDP and TCP sockets |
+| **Files and persistence** | sqlite (crash-safe) for history, offline queue, pinned keys and unfinished transfers; settings written atomically (`os.replace`); private key file `chmod 600`; partial downloads truncated and resumed |
+| **Memory management** | files are streamed in 64 KB chunks, never loaded whole (a 500 MB file needs a few MB) |
+| **Retry and back-off scheduling** | bounded reconnection and resume attempts with growing pauses (`RECONNECT_DELAYS`, `RESUME_DELAYS`) |
+| **Process monitoring** | CPU time from `os.times()`, resident memory from the OS (Working Set via `ctypes` on Windows, `/proc/self/statm` on Linux), `threading.active_count()` (`osmonitor.py`) |
+
+## Novelty
+
+What goes beyond a basic socket chat:
+
+* **No server at all**: discovery, groups and the offline queue work peer-to-peer; groups describe themselves in every message.
+* **Trust on first use**: each name is pinned to an Ed25519 key, so impostors, duplicate names and downgrade
+  attempts are refused; BYE packets are signed, so nobody can "log you out" with a forged UDP packet.
+* **Resumable, self-healing file transfer**: per-chunk SHA-256, damaged chunks re-requested, resume after a
+  disconnection *or a restart* from the last verified chunk, checked by hash on both sides.
+* **Automatic reconnection** with bounded back-off, and **connect by IP** for networks that block broadcast.
+* **Built-in observability**: network log, Network info (subnet, RTT) and a System monitor for the process itself.
+
 ## How the networking concepts appear in the code
 
 | Concept | Where |
@@ -400,3 +452,10 @@ Use two laptops on a hotspot, or two windows on one PC (start them as shown abov
 * The "Everyone" room reaches the people who are online *at that moment*; it is not queued for offline peers
   (named groups are).
 * The username must be unique on the network.
+* LAN only: no NAT traversal or relay, so peers must reach each other directly (same network or routable IPs).
+* Trust on first use: the very first connection under a name is trusted. Compare fingerprints once to rule out
+  an impostor; a reinstalled peer shows an "identity changed" prompt.
+* Addresses added with *Connect by IP* are remembered for the current session only (use `--peer` at start-up).
+* Resume needs both sides to run this version; with an older peer a broken transfer fails as before.
+* System monitor: CPU % is the share of all cores for this process; on macOS RAM is the peak, not the current value.
+* The GUI is checked by hand and by small smoke tests; there are no automated end-to-end GUI tests.
